@@ -1,0 +1,42 @@
+name: publish
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+     
+jobs:
+  publish-manager:
+    name: Build / Manager 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          build-args: |
+            --build-arg PROJECT=manager
+  publish-router:
+    name: Build / Router 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          build-args: |
+            --build-arg PROJECT=router

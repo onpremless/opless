@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  manager:
+    build:
+      context: .
+      args:
+        - PROJECT=manager
+    image: opless-manager:latest
+    restart: unless-stopped
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    ports:
+      - "${MANAGER_PORT:-8081}:${MANAGER_PORT:-8081}"
+    environment:
+      GIN_MODE: "release"
+      PORT: ${MANAGER_PORT:-8081}
+      INTERNAL_NETWORK: opless_lambda_net
+      REDIS_ENDPOINT: "redis:6379"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-MINIO_SECRET_KEY}
+      TMP_TTL: ${TMP_TTL:-900}
+    depends_on:
+      - minio
+      - redis
+    networks:
+      - opless_default_net
+      - opless_lambda_net
+  
+  router:
+    build:
+      context: .
+      args:
+        - PROJECT=router
+    image: opless-router:latest
+    restart: unless-stopped
+    ports:
+      - "${ROUTER_PORT:-8080}:${ROUTER_PORT:-8080}"
+    environment:
+      GIN_MODE: "release"
+      PORT: ${ROUTER_PORT:-8080}
+      REDIS_ENDPOINT: "redis:6379"
+    depends_on:
+      - redis
+    networks:
+      - opless_default_net
+      - opless_lambda_net
+  minio:
+    image: "quay.io/minio/minio"
+    command: server --console-address ":9001" /data/minio
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-MINIO_SECRET_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - "minio_data:/data"
+    networks:
+      - opless_default_net
+
+  redis:
+    image: "redis:7-alpine"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - "redis_data:/data"
+      - "./redis:/usr/local/etc/redis"
+    networks:
+      - opless_default_net
+
+volumes:
+  minio_data:
+  redis_data:
+
+networks:
+  opless_lambda_net:
+    name: opless_lambda_net
+    driver: bridge
+  opless_default_net:
+    name: opless_default_net
+    driver: bridge

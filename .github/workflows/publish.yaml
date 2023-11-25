@@ -1,0 +1,60 @@
+name: publish
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+     
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  publish-manager:
+    name: Publish / Manager 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          build-args: |
+            --build-arg PROJECT=manager
+          tags: ghcr.io/opless-manager:latest,ghcr.io/opless-manager:${{ github.ref_name }}
+  publish-router:
+    name: Publish / Router 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          build-args: |
+            --build-arg PROJECT=router
+          tags: ghcr.io/opless-router:latest,ghcr.io/opless-router:${{ github.ref_name }}
