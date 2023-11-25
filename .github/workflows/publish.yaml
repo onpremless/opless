@@ -31,7 +31,7 @@ jobs:
         with:
           push: true
           build-args: PROJECT=manager
-          tags: ghcr.io/opless-manager:latest,ghcr.io/opless-manager:${{ github.ref_name }}
+          tags: ghcr.io/onpremless/manager:latest,ghcr.io/onpremless/manager:${{ github.ref_name }}
   publish-router:
     name: Publish / Router 
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
         with:
           push: true
           build-args: PROJECT=router
-          tags: ghcr.io/opless-router:latest,ghcr.io/opless-router:${{ github.ref_name }}
+          tags: ghcr.io/onpremless/router:latest,ghcr.io/onpremless/router:${{ github.ref_name }}
