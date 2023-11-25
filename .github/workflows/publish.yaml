@@ -30,8 +30,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          build-args: |
-            --build-arg PROJECT=manager
+          build-args: PROJECT=manager
           tags: ghcr.io/opless-manager:latest,ghcr.io/opless-manager:${{ github.ref_name }}
   publish-router:
     name: Publish / Router 
@@ -55,6 +54,5 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          build-args: |
-            --build-arg PROJECT=router
+          build-args: PROJECT=router
           tags: ghcr.io/opless-router:latest,ghcr.io/opless-router:${{ github.ref_name }}
