@@ -101,8 +101,12 @@ func getValueByKey[T any](ctx context.Context, key string) func(r *Redis) (*T, e
 	return func(r *Redis) (*T, error) {
 		rawVal, err := r.Client.Get(ctx, key).Result()
 		if err != nil {
+			if err == redis.Nil {
+				return nil, nil
+			}
+
 			r.L.Error(
-				"Failed to get redis members",
+				"Failed to get value by key",
 				zap.Error(err),
 				zap.String("key", key),
 			)
