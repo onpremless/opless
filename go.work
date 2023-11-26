@@ -2,8 +2,8 @@ go 1.21
 
 use (
 	./common
-	./router
 	./manager
+	./router
 )
 
 // Somehow it helps to use common from workspace.
