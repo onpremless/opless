@@ -54,12 +54,12 @@ func (m ConcurrentMap[K, V]) Update(k K, update func(v V) V) ConcurrentMap[K, V]
 	return m
 }
 
-func (m ConcurrentMap[K, V]) ForEach(traverse func(k K, v V)) ConcurrentMap[K, V] {
+func (m ConcurrentMap[K, V]) ForEach(fn func(k K, v V)) ConcurrentMap[K, V] {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
 	for k, v := range m.m {
-		traverse(k, v)
+		fn(k, v)
 	}
 
 	return m
