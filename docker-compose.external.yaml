@@ -2,11 +2,7 @@ version: '3.8'
 
 services:
   manager:
-    build:
-      context: .
-      args:
-        - PROJECT=manager
-    image: opless-manager:latest
+    image: ghcr.io/onpremless/manager:latest
     restart: unless-stopped
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -31,11 +27,7 @@ services:
       - opless_lambda_net
   
   router:
-    build:
-      context: .
-      args:
-        - PROJECT=router
-    image: opless-router:latest
+    image: ghcr.io/onpremless/router:latest
     restart: unless-stopped
     ports:
       - "${ROUTER_PORT:-8080}:${ROUTER_PORT:-8080}"
