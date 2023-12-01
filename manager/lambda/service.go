@@ -34,7 +34,7 @@ type LambdaService interface {
 }
 
 func CreateLambdaService() (LambdaService, error) {
-	dockerSvc, err := docker.NewDockerService(redis.DolessID)
+	dockerSvc, err := docker.NewDockerService(redis.OPlessID)
 
 	if err != nil {
 		return nil, err
@@ -207,7 +207,7 @@ func (s service) start(ctx context.Context, lambda *api.Lambda) (string, error) 
 	}
 
 	image := lambda.Name
-	container := "doless-" + lambda.Name
+	container := "opless-" + lambda.Name
 	lambda.Docker.Image = &image
 	lambda.Docker.Container = &container
 

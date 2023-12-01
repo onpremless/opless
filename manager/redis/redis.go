@@ -12,7 +12,7 @@ import (
 )
 
 var Client *db.Redis
-var DolessID = ""
+var OPlessID = ""
 
 func init() {
 	redisEndpoint := util.GetStrVar("REDIS_ENDPOINT")
@@ -22,16 +22,16 @@ func init() {
 		panic(fmt.Errorf("failed to connect to redis: %w", err))
 	}
 
-	res := Client.Client.Get(context.Background(), "doless-id")
+	res := Client.Client.Get(context.Background(), "opless-id")
 	err = res.Err()
 	if err == nil {
-		DolessID = res.Val()
+		OPlessID = res.Val()
 		return
 	}
 
 	if err == redis.Nil {
-		DolessID = util.UUID()
-		if err := Client.Client.Set(context.Background(), "doless-id", DolessID, 0).Err(); err != nil {
+		OPlessID = util.UUID()
+		if err := Client.Client.Set(context.Background(), "opless-id", OPlessID, 0).Err(); err != nil {
 			panic(err)
 		}
 	}

@@ -50,7 +50,7 @@ func NewDockerService(id string) (DockerService, error) {
 
 func (s service) ListContainers(ctx context.Context) ([]types.Container, error) {
 	return s.client.ContainerList(ctx, types.ContainerListOptions{
-		Filters: filters.NewArgs(filters.KeyValuePair{Key: "label", Value: "doless=" + s.id}),
+		Filters: filters.NewArgs(filters.KeyValuePair{Key: "label", Value: "opless=" + s.id}),
 	})
 }
 
@@ -66,7 +66,7 @@ func (s service) Create(ctx context.Context, lambda *api.Lambda, tar io.Reader) 
 	images, err := s.client.ImageList(
 		ctx,
 		types.ImageListOptions{
-			Filters: filters.NewArgs(filters.KeyValuePair{Key: "label", Value: "doless=" + s.id}),
+			Filters: filters.NewArgs(filters.KeyValuePair{Key: "label", Value: "opless=" + s.id}),
 		})
 	if err != nil {
 		return "", err
@@ -81,7 +81,7 @@ func (s service) Create(ctx context.Context, lambda *api.Lambda, tar io.Reader) 
 
 	out, err := s.client.ImageBuild(ctx, tar, types.ImageBuildOptions{
 		Tags:   []string{*lambda.Docker.Image},
-		Labels: map[string]string{"doless": s.id},
+		Labels: map[string]string{"opless": s.id},
 	})
 	if err != nil {
 		return "", err
@@ -120,7 +120,7 @@ func (s service) CreateContainer(ctx context.Context, lambda *api.Lambda) (strin
 
 	err := creator.createContainer(ctx, &container.Config{
 		Image:  *lambda.Docker.Image,
-		Labels: map[string]string{"doless": s.id},
+		Labels: map[string]string{"opless": s.id},
 	})
 	if err != nil {
 		creator.rollback()

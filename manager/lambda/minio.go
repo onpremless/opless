@@ -106,7 +106,7 @@ func BootstrapLambda(ctx context.Context, id string, lambda *api.CreateLambda) e
 	}
 	defer archive.Close()
 
-	tmpDir, err := os.MkdirTemp("", "doless-")
+	tmpDir, err := os.MkdirTemp("", "opless-")
 	if err != nil {
 		return err
 	}
@@ -182,7 +182,7 @@ func TarLambda(ctx context.Context, lambda string, runtime string) (io.Reader, e
 		Recursive: true,
 	})
 
-	dir, err := os.MkdirTemp("", "doless-lambda-")
+	dir, err := os.MkdirTemp("", "opless-lambda-")
 	if err != nil {
 		return nil, err
 	}
